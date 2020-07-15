@@ -8,47 +8,38 @@ import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from "@material-ui/core/styles";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
-    width: '100%',
+    width: "100%",
     marginTop: theme.spacing.unit * 3,
-    overflowX: "auto"
+    overflowX: "auto",
   },
   table: {
-    minWidth: 1080
-  }
-})
-
-const customers = [
-  {
-    id: 1,
-    image: "https://placeimg.com/64/64/1",
-    name: "홍길동1",
-    birthday: "961222",
-    gender: "남성",
-    job: "대학생",
+    minWidth: 1080,
   },
-  {
-    id: 2,
-    image: "https://placeimg.com/64/64/2",
-    name: "홍길동2",
-    birthday: "961222",
-    gender: "남성",
-    job: "대학생",
-  },
-  {
-    id: 3,
-    image: "https://placeimg.com/64/64/3",
-    name: "홍길동3",
-    birthday: "961222",
-    gender: "남성",
-    job: "대학생",
-  },
-];
+});
 
 class App extends Component {
+  // state => 변경 가능한 값
+  state = {
+    customers: "",
+  };
+
+  componentDidMount() {
+    // 모든 컴포넌트의 마운트가 완료 되었을 때
+    this.callApi()
+    .then((res) => this.setState({ customers: res }))
+    .catch(err => console.log(err));
+  }
+
+  callApi = async () => {
+    const response = await fetch("/api/customers");
+    const body = await response.json();
+    return body;
+  };
+
   render() {
     const { classes } = this.props;
     return (
@@ -65,7 +56,7 @@ class App extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {customers.map((c) => {
+            {this.state.customers? this.state.customers.map((c) => {
               return (
                 <Customer
                   key={c.id}
@@ -77,7 +68,7 @@ class App extends Component {
                   job={c.job}
                 />
               );
-            })}
+            }) : ""}
           </TableBody>
         </Table>
       </Paper>
