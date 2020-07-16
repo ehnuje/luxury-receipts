@@ -26,12 +26,39 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
+const multer = require('multer');
+const upload = multer({dest: './upload'});
+
 app.get("/api/customers", (req, res) => {
-    console.log("aaaa")
   connection.query("SELECT * FROM TEST.CUSTOMER", (err, rows, fields) => {
-    console.log("abcde"+err)
     res.send(rows);
   });
 });
+
+app.use('/image', express.static('./upload')); // 맵핑이 됨.
+
+app.post('/api/customers', upload.single('image', (req, res) => {
+    let sql = 'INSERT INTO TEST.CUSTOMERS VALUES (null, ?, ?, ?, ?, ?)';
+    let image = '/image/' + req.file.filename;
+    let name = req.body.name;
+    let birthday = req.body.birthday;
+    let gender = req.body.gender;
+    let job = req.body.job;
+    let params = [image, name, birthday, gender, job];
+
+    console.log("aaaaa");
+    console.log(name);
+    console.log(image);
+    console.log(birthday);
+    console.log(gender);
+
+    connection.query(sql, params, 
+        (err, ros, fields) => {
+            res.send(rows);
+            console.log("aaaa"+err);
+        });
+
+
+}))
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
