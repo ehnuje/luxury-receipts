@@ -43,6 +43,7 @@ app.use("/image", express.static("./upload")); // 맵핑이 됨.
 app.post("/api/customers", upload.single("image"), (req, res) => {
   console.log("post /api/customers");
   let sql = "INSERT INTO TEST.CUSTOMER VALUES (null, ?, ?, ?, ?, ?, now(), 0)";
+  console.log(req.file);
   let image = "/image/" + req.file.filename;
   let name = req.body.name;
   let birthday = req.body.birthday;
