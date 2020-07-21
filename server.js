@@ -30,17 +30,19 @@ const multer = require("multer");
 const upload = multer({ dest: "./upload" });
 
 app.get("/api/customers", (req, res) => {
-  console.log("aaaa");
-  connection.query("SELECT * FROM TEST.CUSTOMER", (err, rows, fields) => {
-    res.send(rows);
-  });
+  connection.query(
+    "SELECT * FROM TEST.CUSTOMER WHERE isDeleted = 0",
+    (err, rows, fields) => {
+      res.send(rows);
+    }
+  );
 });
 
 app.use("/image", express.static("./upload")); // 맵핑이 됨.
 
 app.post("/api/customers", upload.single("image"), (req, res) => {
   console.log("post /api/customers");
-  let sql = "INSERT INTO TEST.CUSTOMER VALUES (null, ?, ?, ?, ?, ?)";
+  let sql = "INSERT INTO TEST.CUSTOMER VALUES (null, ?, ?, ?, ?, ?, now(), 0)";
   let image = "/image/" + req.file.filename;
   let name = req.body.name;
   let birthday = req.body.birthday;
@@ -56,7 +58,16 @@ app.post("/api/customers", upload.single("image"), (req, res) => {
 
   connection.query(sql, params, (err, rows, fields) => {
     res.send(rows);
-    console.log("aaaa" + err);
+  });
+});
+
+app.delete("/api/customers/:id", (req, res) => {
+  console.log("received delete request");
+  let sql = "UPDATE TEST.CUSTOMER SET isDeleted = 1 WHERE id = ?";
+  let params = [req.params.id];
+  console.log(params);
+  connection.query(sql, params, (err, rows, fields) => {
+    res.send(rows);
   });
 });
 
