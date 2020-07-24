@@ -35,7 +35,7 @@ const styles = (theme) => ({
   },
   root: {
     width: "100%",
-    minWidth: 1080,
+    //minWidth: 1080,
   },
   paper: {
     marginLeft: 18,
@@ -178,6 +178,7 @@ class App extends Component {
           <Typography className={classes.title} variant="h6" noWrap>
             영수증 관리 시스템
           </Typography>
+          <div className={classes.sectionDesktop}></div>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />

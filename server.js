@@ -45,7 +45,7 @@ app.post("/api/products", upload.single("image"), (req, res) => {
   // 컨트랙트를 디플로이 하자
 
   let sql =
-    "INSERT INTO TEST.PRODUCT (name, image, contractAddr, registeredDate, isDeleted) VALUES (?, ?, ``, now(), 0)";
+    "INSERT INTO TEST.PRODUCT (name, image, registeredDate, isDeleted) VALUES (?, ?, now(), 0)";
   console.log(req.file);
   let image = "/image/" + req.file.filename;
   let name = req.body.name;
@@ -56,6 +56,7 @@ app.post("/api/products", upload.single("image"), (req, res) => {
 
   connection.query(sql, params, (err, rows, fields) => {
     res.send(rows);
+    console.log(err);
   });
 });
 

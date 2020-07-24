@@ -13,6 +13,30 @@ const styles = (theme) => ({
   },
 });
 
+const accessKeyId = "201373a4713f5d6f6dd0409035dbf89e7a89ddb1";
+const secretAccessKey = "253c8ecb52c79a8fd895beada9e471df7be8d429";
+
+const option = {
+  headers: [
+    {
+      name: "Authorization",
+      value:
+        "Basic " +
+        Buffer.from(accessKeyId + ":" + secretAccessKey).toString("base64"),
+    },
+    { name: "origin", value: "localhost" },
+    { name: "x-krn", value: "krn:1001:node" },
+  ],
+};
+
+const Caver = require("caver-js");
+const caver = new Caver(
+  new Caver.providers.HttpProvider(
+    "https://node-api.beta.klaytn.io/v1/klaytn",
+    option
+  )
+);
+
 class PrivateKeyImport extends React.Component {
   constructor(props) {
     super(props);
@@ -43,9 +67,13 @@ class PrivateKeyImport extends React.Component {
     console.log("handleFormSubmit");
     e.preventDefault();
 
-    localStorage.PrivateKey = this.state.privateKey;
-    // 전송 이후 값 초기화
-    this.handleClose();
+    if (caver.utils.isValidPrivateKey(this.state.privateKey)) {
+      localStorage.PrivateKey = this.state.privateKey;
+      this.handleClose();
+    } else {
+      console.log("err");
+      this.handleClose();
+    }
   };
 
   handleFileChange = (e) => {
@@ -53,6 +81,7 @@ class PrivateKeyImport extends React.Component {
     this.setState({
       file: e.target.files[0],
       fileName: e.target.value,
+      privateKey: "",
     });
   };
 
@@ -81,7 +110,11 @@ class PrivateKeyImport extends React.Component {
               label="PrivateKey"
               type="text"
               name="privateKey"
-              value={this.state.privateKey}
+              value={
+                this.state.privateKey
+                  ? this.state.privateKey
+                  : localStorage.PrivateKey
+              }
               onChange={this.handleValueChange}
             />
           </DialogContent>
