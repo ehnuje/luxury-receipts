@@ -19,22 +19,20 @@ class CustomerAdd extends React.Component {
     super(props);
     this.state = {
       file: null,
-      userName: "",
-      birthday: "",
-      gender: "",
-      job: "",
+      name: "",
+      registeredDate: "",
       fileName: "",
       open: false, // dialog 창이 열려있는지 확인하는 용도
     };
   }
 
   addCustomer = () => {
-    const url = "/api/customers";
+    const url = "/api/products";
     const formData = new FormData();
     formData.append("image", this.state.file);
     formData.append("filename", this.state.fileName);
-    formData.append("name", this.state.userName);
-    formData.append("birthday", this.state.birthday);
+    formData.append("name", this.state.name);
+    formData.append("registeredDate", this.state.registeredDate);
     formData.append("gender", this.state.gender);
     formData.append("job", this.state.job);
     const config = {
@@ -56,10 +54,8 @@ class CustomerAdd extends React.Component {
     // 전송 이후 값 초기화
     this.setState({
       file: null,
-      userName: "",
-      birthday: "",
-      gender: "",
-      job: "",
+      name: "",
+      registeredDate: "",
       fileName: "",
       open: false,
     });
@@ -90,10 +86,8 @@ class CustomerAdd extends React.Component {
     console.log("handleClose");
     this.setState({
       file: null,
-      userName: "",
-      birthday: "",
-      gender: "",
-      job: "",
+      name: "",
+      registeredDate: "",
       fileName: "",
       open: false, // dialog 창이 열려있는지 확인하는 용도
     });
@@ -108,10 +102,10 @@ class CustomerAdd extends React.Component {
           color="primary"
           onClick={this.handleClickOpen}
         >
-          고객 추가하기
+          제품 추가하기
         </Button>
         <Dialog open={this.state.open} onClose={this.handleClose}>
-          <DialogTitle>고객 추가</DialogTitle>
+          <DialogTitle>제품 추가</DialogTitle>
           <DialogContent>
             <input
               className={classes.hidden}
@@ -130,42 +124,19 @@ class CustomerAdd extends React.Component {
                 name="file"
               >
                 {this.state.fileName === ""
-                  ? "프로필 이미지 선택"
+                  ? "제품 이미지 선택"
                   : this.state.fileName}
               </Button>
             </label>
             <br />
             <TextField
-              label="이름"
+              label="제품명"
               type="text"
-              name="userName"
-              value={this.state.userName}
+              name="name"
+              value={this.state.name}
               onChange={this.handleValueChange}
             />
             <br />
-            <TextField
-              label="생년월일"
-              type="text"
-              name="birthday"
-              value={this.state.birthday}
-              onChange={this.handleValueChange}
-            />
-            <br />
-            <TextField
-              label="성별"
-              type="text"
-              name="gender"
-              value={this.state.gender}
-              onChange={this.handleValueChange}
-            />
-            <br />
-            <TextField
-              label="직업"
-              type="text"
-              name="job"
-              value={this.state.job}
-              onChange={this.handleValueChange}
-            />
           </DialogContent>
           <DialogActions>
             <Button
@@ -185,53 +156,6 @@ class CustomerAdd extends React.Component {
           </DialogActions>
         </Dialog>
       </div>
-      /*
-      <form onSubmit={this.handleFormSubmit} encType="multipart/form-data">
-        <h1>고객 추가</h1>
-        프로필 이미지:{" "}
-        <input
-          type="file"
-          name="file"
-          file={this.state.file}
-          value={this.state.fileName}
-          onChange={this.handleFileChange}
-        />
-        <br />
-        이름:{" "}
-        <input
-          type="text"
-          name="userName"
-          value={this.state.userName}
-          onChange={this.handleValueChange}
-        />
-        <br />
-        생년월일:{" "}
-        <input
-          type="text"
-          name="birthday"
-          value={this.state.birthday}
-          onChange={this.handleValueChange}
-        />
-        <br />
-        성별:{" "}
-        <input
-          type="text"
-          name="gender"
-          value={this.state.gender}
-          onChange={this.handleValueChange}
-        />
-        <br />
-        직업:{" "}
-        <input
-          type="text"
-          name="job"
-          value={this.state.job}
-          onChange={this.handleValueChange}
-        />
-        <br />
-        <button type="submit">추가하기</button>
-      </form>
-      */
     );
   }
 }

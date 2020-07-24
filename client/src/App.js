@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import Customer from "./components/Customer";
+import Product from "./components/Product";
 import CustomerAdd from "./components/CustomerAdd";
+import BlockNumber from "./components/BlockNumber";
+import PrivateKeyImport from "./components/PrivateKeyImport";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -150,7 +152,7 @@ class App extends Component {
   };
 
   callApi = async () => {
-    const response = await fetch("/api/customers");
+    const response = await fetch("/api/products");
     const body = await response.json();
     return body;
   };
@@ -160,6 +162,43 @@ class App extends Component {
     this.setState({ completed: completed >= 100 ? 0 : completed + 1 });
   };
 
+  appBar = () => {
+    const { classes } = this.props;
+    return (
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="open drawer"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography className={classes.title} variant="h6" noWrap>
+            영수증 관리 시스템
+          </Typography>
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+            <InputBase
+              placeholder="검색"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+              inputProps={{ "aria-label": "search" }}
+              name="searchKeyword"
+              value={this.state.searchKeyword}
+              onChange={this.handleValueChange}
+            />
+          </div>
+        </Toolbar>
+      </AppBar>
+    );
+  };
+
   render() {
     const filteredComponents = (data) => {
       data = data.filter((c) => {
@@ -167,70 +206,33 @@ class App extends Component {
       });
       return data.map((c) => {
         return (
-          <Customer
+          <Product
             stateRefresh={this.stateRefresh}
             key={c.id}
             id={c.id}
             image={c.image}
             name={c.name}
-            birthday={c.birthday}
-            gender={c.gender}
-            job={c.job}
+            registeredDate={c.registeredDate}
           />
         );
       });
     };
     const { classes } = this.props;
-    const cellList = [
-      "번호",
-      "프로필 이미지",
-      "이름",
-      "생년월일",
-      "성별",
-      "직업",
-      "설정",
-    ];
+    const productCells = ["아이디", "이미지", "제품명", "등록일자", "설정"];
     return (
       <div className={classes.root}>
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton
-              edge="start"
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="open drawer"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography className={classes.title} variant="h6" noWrap>
-              고객 관리 시스템
-            </Typography>
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder="검색"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-                inputProps={{ "aria-label": "search" }}
-                name="searchKeyword"
-                value={this.state.searchKeyword}
-                onChange={this.handleValueChange}
-              />
-            </div>
-          </Toolbar>
-        </AppBar>
+        {this.appBar()}
         <div className={classes.menu}>
           <CustomerAdd stateRefresh={this.stateRefresh} />
+        </div>
+        <div className={classes.menu}>
+          <PrivateKeyImport />
         </div>
         <Paper className={classes.paper}>
           <Table className={classes.table}>
             <TableHead>
               <TableRow>
-                {cellList.map((c) => {
+                {productCells.map((c) => {
                   return (
                     <TableCell className={classes.tableHead}>{c}</TableCell>
                   );
@@ -242,7 +244,7 @@ class App extends Component {
                 filteredComponents(this.state.customers)
               ) : (
                 <TableRow>
-                  <TableCell colSpan="6" align="center">
+                  <TableCell colSpan="7" align="center">
                     <CircularProgress
                       className={classes.progress}
                       variant="determinate"
